@@ -2,4 +2,5 @@
 <resources>
     <dimen name="inner_padding_size">8dp</dimen>
     <dimen name="line_size">0.5dp</dimen>
+    <dimen name="height_progressbar">8dp</dimen>
 </resources>
