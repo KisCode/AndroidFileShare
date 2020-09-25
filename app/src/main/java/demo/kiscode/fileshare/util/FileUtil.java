@@ -2,7 +2,7 @@ package demo.kiscode.fileshare.util;
 
 /**
  * Description:
- * Author: kanjianxiong
+ * Author: kisCode
  * Date : 2020/9/21 16:49
  **/
 public class FileUtil {
