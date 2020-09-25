@@ -11,19 +11,14 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
 
-        <activity
-            android:name=".ShareFileReceiveActivity"
-            android:theme="@style/DialogActivityTheme">
             <intent-filter>
                 <!-- 接收文件分享 -->
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/*" />
+                <data android:mimeType="*/*" />
             </intent-filter>
         </activity>
     </application>

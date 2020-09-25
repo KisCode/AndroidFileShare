@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 横向 Progressbar-->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@android:id/background">
+        <shape>
+            <!--<corners android:radius="5dip" />-->
+            <gradient
+                android:startColor="@android:color/darker_gray"
+                android:centerColor="@android:color/darker_gray"
+                android:endColor="@android:color/darker_gray"
+                android:centerY="0.75"
+                android:angle="270"
+                />
+            <corners android:radius="@dimen/height_progressbar"/>
+        </shape>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape>
+                <gradient
+                    android:startColor="@color/colorPrimary"
+                    android:centerColor="@color/colorPrimary"
+                    android:centerY="0.75"
+                    android:endColor="@color/colorPrimary"
+                    android:angle="270"
+                    />
+                <corners android:radius="@dimen/height_progressbar"/>
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>
