@@ -3,4 +3,8 @@
     <color name="colorPrimary">#D81E06</color>
     <color name="colorPrimaryDark">#C81E06</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <color name="textColorPrimary">#DF000000</color> <!--一级标题字体颜色 87%黑-->
+    <color name="textColorSecondary">#89000000</color> <!--二级标题字体颜色 54%黑-->
+    <color name="textColorDisableAndHint">#61000000</color> <!--hint标题字体颜色 38%黑-->
 </resources>

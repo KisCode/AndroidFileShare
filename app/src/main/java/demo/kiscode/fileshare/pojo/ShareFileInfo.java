@@ -2,7 +2,7 @@ package demo.kiscode.fileshare.pojo;
 
 /**
  * Description:
- * Author: kanjianxiong
+ * Author: keno
  * Date : 2020/9/21 15:36
  **/
 public class ShareFileInfo {

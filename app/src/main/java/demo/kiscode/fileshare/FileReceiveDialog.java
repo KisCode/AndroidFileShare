@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,6 +32,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
+import demo.kiscode.fileshare.biz.FileBiz;
+import demo.kiscode.fileshare.contants.PathType;
 import demo.kiscode.fileshare.pojo.ShareFileInfo;
 import demo.kiscode.fileshare.util.FileIcons;
 
@@ -44,24 +47,27 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
     private static final int CODE_COMPLETE = 279;
     private static final int CODE_PROGRESS = 389;
     private static final String KEY_FILE_URI = "FILE_URI";
+    private static final String KEY_FILE_PATH = "FILE_PATH";
 
     private Uri receiveUri;
+    private String filePath;
     private ShareFileInfo shareFileInfo;
 
     private ImageView ivFileIcon;
-    private TextView tvFileName;
-    private TextView tvFileSize;
+    private TextView tvFileName, tvFileSize, tvReceivePath;
     private ContentLoadingProgressBar progressBar;
 
     private ProgressHandler mHandler;
 
-    public static FileReceiveDialog instantiate(Uri fileUri) {
+    public static FileReceiveDialog instantiate(Uri fileUri, PathType path) {
         FileReceiveDialog dialog = new FileReceiveDialog();
         Bundle bundle = new Bundle();
         bundle.putParcelable(KEY_FILE_URI, fileUri);
+        bundle.putSerializable(KEY_FILE_PATH, path);
         dialog.setArguments(bundle);
         return dialog;
     }
+
 
     @Nullable
     @Override
@@ -73,18 +79,24 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
         return view;
     }
 
-
     private void initHandler() {
         mHandler = new ProgressHandler(getActivity());
     }
 
     private void initIntent() {
         receiveUri = getArguments().getParcelable(KEY_FILE_URI);
+        PathType pathType = (PathType) getArguments().getSerializable(KEY_FILE_PATH);
         if (receiveUri == null) {
             return;
         }
 
+        if (pathType != null) {
+            filePath = FileBiz.getDirByCode(getContext(), pathType).getAbsolutePath();
+        }
+        tvReceivePath.setText(filePath);
+
         Log.i(TAG, receiveUri.toString());
+        Log.i(TAG, "filePath:" + pathType);
         shareFileInfo = new ShareFileInfo();
         if (ContentResolver.SCHEME_FILE.equals(receiveUri.getScheme())) {
             File file = new File(receiveUri.getPath());
@@ -112,6 +124,7 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
         ivFileIcon = rootView.findViewById(R.id.iv_file_icon);
         tvFileName = rootView.findViewById(R.id.tv_file_name);
         tvFileSize = rootView.findViewById(R.id.tv_file_size);
+        tvReceivePath = rootView.findViewById(R.id.tv_receive_path);
         progressBar = rootView.findViewById(R.id.progressbar);
         TextView tvCancel = rootView.findViewById(R.id.tv_cancel);
         TextView tvSure = rootView.findViewById(R.id.tv_sure);
@@ -128,16 +141,16 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
                 break;
             case R.id.tv_sure:
                 //接收
-                agrreReceive();
+                agreeReceive();
                 break;
         }
     }
 
-    private void agrreReceive() {
-        new Thread(new Runnable() {
+    private void agreeReceive() {
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
-                File cache = new File(getActivity().getCacheDir(), Math.round((Math.random() + 1) * 1000) + shareFileInfo.getName());
+                File cache = new File(filePath, Math.round((Math.random() + 1) * 1000) + shareFileInfo.getName());
                 long fileSize = shareFileInfo.getSize();
                 try {
                     ParcelFileDescriptor descriptor = getActivity().getContentResolver().openFileDescriptor(receiveUri, "r");
@@ -171,7 +184,7 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
     private class ProgressHandler extends Handler {
