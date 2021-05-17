@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/inner_padding_size"
         android:text="Receive new File"
-        android:textSize="16sp"
+        android:textSize="@dimen/subhead_text_size"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -42,6 +42,8 @@
         android:ellipsize="end"
         android:maxLines="3"
         android:text="FileName"
+        app:layout_constraintBottom_toTopOf="@+id/tv_file_size"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_file_icon"
         app:layout_constraintTop_toTopOf="@+id/iv_file_icon" />
 
@@ -50,22 +52,46 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="FileSize"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_file_icon"
         app:layout_constraintStart_toStartOf="@+id/tv_file_name"
         app:layout_constraintTop_toBottomOf="@id/tv_file_name" />
 
 
+    <TextView
+        android:id="@+id/tv_path_confirm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/inner_padding_size"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="@dimen/body_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_file_icon"
+        android:text="将保存在以下路径：" />
+
+    <TextView
+        android:id="@+id/tv_receive_path"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/body_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingLeft="@dimen/inner_padding_size"
+        android:paddingRight="@dimen/inner_padding_size"
+        app:layout_constraintTop_toBottomOf="@+id/tv_path_confirm"
+        tools:text="storage/emulated/0/Android/data/demo.kiscode.fileshare/cache" />
     <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/progressbar"
         android:layout_width="0dp"
         android:layout_height="@dimen/height_progressbar"
-        android:progressDrawable="@drawable/loading_progress"
         android:layout_marginStart="@dimen/inner_padding_size"
-        android:layout_marginEnd="@dimen/inner_padding_size"
         android:layout_marginTop="@dimen/inner_padding_size"
-        app:layout_constraintTop_toBottomOf="@+id/iv_file_icon"
+        android:layout_marginEnd="@dimen/inner_padding_size"
+        android:progressDrawable="@drawable/loading_progress"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
+        app:layout_constraintTop_toBottomOf="@+id/tv_receive_path" />
     <View
         android:id="@+id/view_line"
         android:layout_width="match_parent"

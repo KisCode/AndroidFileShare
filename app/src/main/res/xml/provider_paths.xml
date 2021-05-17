@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!--    <external-path name="external_files" path="."/>-->
+    <!--    <files-path name="data_files" path="."/>-->
+
+    <!-- FileProvider共享虚拟目录 -->
+
+    <!-- root-path              : SD卡根目录，系统隐藏，不推荐使用 -->
+    <!-- file-path              : 物理路径为Context.getFilesDir() -->
+    <!-- cache-path             : 物理路径为Context.getCacheDir() -->
+    <!-- external-path          : 物理路径为Environment.getExternalStorageDirectory() -->
+    <!-- external-files-path    : 物理路径为Context.getExternalFilesDir(String) -->
+    <!-- external-cache-path    : 物理路径为Context.getExternalCacheDir() -->
+
+    <!-- Context.getFilesDir()目录存放保存的数据库信息，不开放 -->
+    <!--<files-path name="files" path="files" />-->
+    <!--<cache-path name="cache" path="files" />-->
+
+
+    <!-- 标签 name : 文件路径级别对应的路径映射名称，对外暴露名称，不可重复。 -->
+    <!-- 标签 path : 文件路径级别对应的路径，对外暴露子目录名称，可以使用"/"或"."通配所有子目录。 -->
+
+    <!-- "/storage/emulated/0" 映射为 "/external" -->
+    <external-path
+        name="external"
+        path="/" />
+
+    <!-- "/Android/<package_name>/cache/" 映射为 "external-cache" -->
+    <external-cache-path
+        name="external-cache"
+        path="/" />
+
+    <!-- "/Android/<package_name>/files/" 映射为 "external-files" -->
+    <external-files-path
+        name="external-files"
+        path="/" />
+</paths>
