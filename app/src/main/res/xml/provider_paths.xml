@@ -13,8 +13,8 @@
     <!-- external-cache-path    : 物理路径为Context.getExternalCacheDir() -->
 
     <!-- Context.getFilesDir()目录存放保存的数据库信息，不开放 -->
-    <!--<files-path name="files" path="files" />-->
-    <!--<cache-path name="cache" path="files" />-->
+    <files-path name="files" path="files" />
+    <cache-path name="cache" path="files" />
 
 
     <!-- 标签 name : 文件路径级别对应的路径映射名称，对外暴露名称，不可重复。 -->
