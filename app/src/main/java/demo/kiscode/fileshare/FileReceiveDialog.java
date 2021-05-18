@@ -2,13 +2,16 @@ package demo.kiscode.fileshare;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -21,18 +24,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.DialogFragment;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
-import demo.kiscode.fileshare.biz.FileBiz;
+import demo.kiscode.fileshare.biz.FileMananger;
 import demo.kiscode.fileshare.contants.PathType;
 import demo.kiscode.fileshare.pojo.ShareFileInfo;
 import demo.kiscode.fileshare.util.FileIcons;
@@ -50,7 +49,7 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
     private static final String KEY_FILE_PATH = "FILE_PATH";
 
     private Uri receiveUri;
-    private String filePath;
+    private PathType pathType;
     private ShareFileInfo shareFileInfo;
 
     private ImageView ivFileIcon;
@@ -85,14 +84,18 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
 
     private void initIntent() {
         receiveUri = getArguments().getParcelable(KEY_FILE_URI);
-        PathType pathType = (PathType) getArguments().getSerializable(KEY_FILE_PATH);
+        pathType = (PathType) getArguments().getSerializable(KEY_FILE_PATH);
         if (receiveUri == null) {
             return;
         }
 
-        if (pathType != null) {
-            filePath = FileBiz.getDirByCode(getContext(), pathType).getAbsolutePath();
+        String filePath;
+        if (pathType == null) {
+            //默认缓存路径
+            pathType = PathType.CacheDir;
         }
+
+        filePath = FileMananger.getDirByCode(getContext(), pathType).getAbsolutePath();
         tvReceivePath.setText(filePath);
 
         Log.i(TAG, receiveUri.toString());
@@ -141,16 +144,82 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
                 break;
             case R.id.tv_sure:
                 //接收
-                agreeReceive();
+//                agreeReceive();
+                saveFile();
                 break;
         }
+    }
+
+    private void saveFile() {
+        String relativePath = Environment.DIRECTORY_DOWNLOADS + File.separator + "zxc";
+        Uri targetSaveUri = getFileUri(shareFileInfo.getName(), relativePath);
+        FileMananger.writeIO(getContext().getContentResolver(), receiveUri, targetSaveUri);
+    }
+
+    private Uri getFileUri(String fileName, String relativePath) {
+        if (pathType == PathType.ExternalStorageDirectory
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ContentResolver resolver = getContext().getContentResolver();
+            //设置文件参数到ContentValues
+            ContentValues values = new ContentValues();
+            //设置文件名
+            values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
+            //设置文件类型
+            String mimeType = FileMananger.getMIME(getContext(), fileName).getValue();
+            values.put(MediaStore.Downloads.MIME_TYPE, mimeType);
+
+            //设置文件相对路径
+            values.put(MediaStore.Downloads.RELATIVE_PATH, relativePath);
+            Uri external = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
+            Uri inserUri = resolver.insert(external, values);
+            return inserUri;
+        } else {
+            File file = new File(FileMananger.getDirByCode(getContext(), pathType), fileName);
+            Uri uri = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                uri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider", file);
+            } else {
+                uri = Uri.fromFile(file);
+            }
+            return uri;
+        }
+/*
+        //外部存储
+        if (pathType == PathType.ExternalStorageDirectory) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ContentResolver resolver = getContext().getContentResolver();
+                //设置文件参数到ContentValues
+                ContentValues values = new ContentValues();
+                //设置文件名
+                values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
+                //设置文件类型
+                String mimeType = FileMananger.getMIME(getContext(), fileName).getValue();
+                values.put(MediaStore.Downloads.MIME_TYPE, mimeType);
+
+                //设置文件相对路径
+                values.put(MediaStore.Downloads.RELATIVE_PATH, relativePath);
+                Uri external = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
+                Uri inserUri = resolver.insert(external, values);
+                return inserUri;
+            }
+            return null;
+        } else {
+            File file = new File(FileMananger.getDirByCode(getContext(), pathType), fileName);
+            Uri uri = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                uri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider", file);
+            } else {
+                uri = Uri.fromFile(file);
+            }
+            return uri;
+        }*/
     }
 
     private void agreeReceive() {
         AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
-                File cache = new File(filePath, Math.round((Math.random() + 1) * 1000) + shareFileInfo.getName());
+                /*File cache = new File(filePath, Math.round((Math.random() + 1) * 1000) + shareFileInfo.getName());
                 long fileSize = shareFileInfo.getSize();
                 try {
                     ParcelFileDescriptor descriptor = getActivity().getContentResolver().openFileDescriptor(receiveUri, "r");
@@ -182,7 +251,7 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
                     dismiss();
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
         });
     }

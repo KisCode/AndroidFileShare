@@ -12,8 +12,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import demo.kiscode.fileshare.adapter.CacheManangerAdapter;
-import demo.kiscode.fileshare.adapter.ReceivePathAdapter;
-import demo.kiscode.fileshare.biz.FileBiz;
+import demo.kiscode.fileshare.biz.FileMananger;
 import demo.kiscode.fileshare.contants.PathType;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         adapter.setOnItemClickListener(pathType -> {
-            File dir = FileBiz.getDirByCode(this, pathType);
+            File dir = FileMananger.getDirByCode(this, pathType);
 
         });
     }

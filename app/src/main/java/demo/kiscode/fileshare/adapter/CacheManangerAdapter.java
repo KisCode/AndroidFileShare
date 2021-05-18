@@ -13,7 +13,7 @@ import java.io.File;
 import java.util.List;
 
 import demo.kiscode.fileshare.R;
-import demo.kiscode.fileshare.biz.FileBiz;
+import demo.kiscode.fileshare.biz.FileMananger;
 import demo.kiscode.fileshare.contants.PathType;
 
 /**
@@ -47,7 +47,7 @@ public class CacheManangerAdapter extends RecyclerView.Adapter<CacheManangerAdap
         PathType pathType = mDatas.get(position);
         holder.tvDirName.setText(pathType.name());
 
-        File dir = FileBiz.getDirByCode(mContext, pathType);
+        File dir = FileMananger.getDirByCode(mContext, pathType);
         if (dir != null) {
             holder.tvDirPath.setText(dir.getAbsolutePath());
         } else {

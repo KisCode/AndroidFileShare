@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import demo.kiscode.fileshare.adapter.ReceivePathAdapter;
-import demo.kiscode.fileshare.biz.FileBiz;
+import demo.kiscode.fileshare.biz.FileMananger;
 import demo.kiscode.fileshare.contants.PathType;
 
 public class ReceiveFileActivity extends AppCompatActivity {
@@ -38,7 +38,7 @@ public class ReceiveFileActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         adapter.setOnItemClickListener(pathType -> {
-            File dir = FileBiz.getDirByCode(this, pathType);
+            File dir = FileMananger.getDirByCode(this, pathType);
             if (dir != null) {
                 FileReceiveDialog dialog = FileReceiveDialog.instantiate(receiveUri, pathType);
                 dialog.show(getSupportFragmentManager(), "FileReceiveDialog");
