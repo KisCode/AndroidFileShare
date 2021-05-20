@@ -1,14 +1,21 @@
 package demo.kiscode.fileshare.biz;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,7 +47,6 @@ public class FileMananger {
         }
         return null;
     }
-
 
     /***
      * 根据文件名获取文件对应的MIME类型
@@ -77,23 +83,76 @@ public class FileMananger {
     }
 
 
-    public static void writeIO(ContentResolver resolver, Uri inUri, Uri outUri, OnWriteCallback onCallBack) {
-        OutputStream outputStream = null;
-        InputStream inputStream = null;
-        try {
-            outputStream = resolver.openOutputStream(outUri);
-            inputStream = resolver.openInputStream(inUri);
+    /***
+     * 获取外部存储路径uri
+     * @param fileName 文件名 zxc.doc
+     * @return 文件uri
+     */
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static Uri getExternalStorageDownloadFileUri(Context context, String fileName) {
+        String relativePath = Environment.DIRECTORY_DOWNLOADS + File.separator + context.getString(R.string.app_name);
+        ContentResolver resolver = context.getContentResolver();
+        //设置文件参数到ContentValues
+        ContentValues values = new ContentValues();
+        //设置文件名
+        values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
+        //设置文件类型
+        String mimeType = FileMananger.getMIME(context, fileName).getValue();
+        values.put(MediaStore.Downloads.MIME_TYPE, mimeType);
 
+        //设置文件相对路径
+        values.put(MediaStore.Downloads.RELATIVE_PATH, relativePath);
+        Uri external = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
+        return resolver.insert(external, values);
+    }
+
+
+    public static void writeIO(ContentResolver resolver, Uri inUri, Uri outUri, OnReceiveCallback onCallBack) {
+        try {
+            OutputStream outputStream = resolver.openOutputStream(outUri);
+            InputStream inputStream = resolver.openInputStream(inUri);
+            writeIO(resolver, inputStream, outputStream, onCallBack);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeIO(ContentResolver resolver, Uri inUri, Uri outUri) {
+        writeIO(resolver, inUri, outUri, null);
+    }
+
+    private static void writeIO(ContentResolver resolver, InputStream inputStream, OutputStream outputStream, OnReceiveCallback onCallBack) {
+        if (inputStream == null) {
+            throw new IllegalArgumentException("inputStream is null");
+        }
+
+        if (outputStream == null) {
+            throw new IllegalArgumentException("inputStream is null");
+        }
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                executeWriteIO(inputStream, outputStream, onCallBack);
+            }
+        });
+    }
+
+    private static void executeWriteIO(InputStream inputStream, OutputStream outputStream, OnReceiveCallback onCallBack) {
+        try {
             byte[] buffer = new byte[4096];
             int count = 0;
             long length = 0;
+
+            long totalSize = inputStream.available();
+
+
             while ((count = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, count);
                 length += count;
-                Log.i("saveFile", "count：" + count + ", lenght: " + length);
+                Log.i("saveFile", "count：" + inputStream.available() + ", length: " + length);
 
                 if (onCallBack != null) {
-                    onCallBack.onProgress(length, inputStream.available());
+                    onCallBack.onProgress(length, totalSize);
                 }
             }
 
@@ -121,12 +180,18 @@ public class FileMananger {
         }
     }
 
-    public static void writeIO(ContentResolver resolver, Uri inUri, Uri outUri) {
-        writeIO(resolver, inUri, outUri, null);
+    public static void writeIO(ContentResolver resolver, Uri inUri, String outAbsolutePath, OnReceiveCallback onCallBack) {
+        try {
+            OutputStream outputStream = new FileOutputStream(outAbsolutePath);
+            InputStream inputStream = resolver.openInputStream(inUri);
+            writeIO(resolver, inputStream, outputStream, onCallBack);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
-    public interface OnWriteCallback {
-        void onProgress(long progress, long totalSize);
+    public interface OnReceiveCallback {
+        void onProgress(long receivedSize, long totalSize);
 
         void onComplete();
 
