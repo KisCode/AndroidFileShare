@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -91,8 +92,9 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
             ContentResolver contentResolver = getContext().getContentResolver();
             Cursor cursor = contentResolver.query(sourceUri, null, null, null, null);
             while (cursor.moveToNext()) {
-                String fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                long fileSize = cursor.getLong(cursor.getColumnIndex(OpenableColumns.SIZE));
+//                String fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Downloads.DISPLAY_NAME));
+                long fileSize = cursor.getLong(cursor.getColumnIndex(MediaStore.Downloads.SIZE));
                 shareFileInfo.setName(fileName);
                 shareFileInfo.setSize(fileSize);
             }
@@ -101,7 +103,7 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
         if (shareFileInfo != null) {
             tvFileName.setText(shareFileInfo.getName());
             tvFileSize.setText(Formatter.formatFileSize(getContext(), shareFileInfo.getSize()));
-            ivFileIcon.setImageResource(FileIcons.getFileIconRes(shareFileInfo.getName()));
+            ivFileIcon.setImageResource(FileIcons.getFileIconRes(getActivity(), shareFileInfo.getName()));
         }
     }
 
@@ -171,4 +173,5 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
     public void onError(Throwable throwable) {
         Log.e(TAG, "onError:\t" + throwable);
     }
+
 }

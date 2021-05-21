@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import demo.kiscode.fileshare.R;
-import demo.kiscode.fileshare.contants.PathType;
 import demo.kiscode.fileshare.pojo.FileModel;
 import demo.kiscode.fileshare.util.FileIcons;
 
@@ -50,12 +49,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ItemViewHolder
 
         holder.tvName.setText(fileModel.getName());
         holder.tvSize.setText(Formatter.formatFileSize(mContext, fileModel.getSize()));
-        holder.ivIcon.setImageResource(FileIcons.getFileIconRes(fileModel.getName()));
+        holder.ivIcon.setImageResource(FileIcons.getFileIconRes(mContext, fileModel.getName()));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mItemOnClickListener!=null){
+                if (mItemOnClickListener != null) {
                     mItemOnClickListener.onClick(fileModel);
                 }
             }
