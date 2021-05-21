@@ -15,7 +15,7 @@ public class FileModel implements Serializable {
     private long createTime;
     private long size;
 
-    public FileModel(String name, PathType pathType, long createTime, long size) {
+    public FileModel(String name, PathType pathType, long size, long createTime) {
         this.name = name;
         this.pathType = pathType;
         this.createTime = createTime;

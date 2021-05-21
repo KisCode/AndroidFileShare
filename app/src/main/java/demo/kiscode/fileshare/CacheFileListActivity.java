@@ -2,10 +2,13 @@ package demo.kiscode.fileshare;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,7 +69,25 @@ public class CacheFileListActivity extends AppCompatActivity {
                 });
             }
         });
-//        mAdapter.
+        mAdapter.setOnItemClickListener(fileModel -> {
+            openFile(fileModel);
+        });
+    }
+
+    private void openFile(FileModel fileModel) {
+        File file = new File(FileMananger.getDirByCode(this, fileModel.getPathType()), fileModel.getName());
+        String type = FileMananger.getMIME(this, fileModel.getName()).getValue();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//			Android 7.0文件权限管理管理 net.rlair.efb.provider
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", file);
+            intent.setDataAndType(uri, type);
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), type);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        startActivity(intent);
     }
 
     private void initViews() {

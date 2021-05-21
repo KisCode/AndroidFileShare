@@ -52,6 +52,14 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ItemViewHolder
         holder.tvSize.setText(Formatter.formatFileSize(mContext, fileModel.getSize()));
         holder.ivIcon.setImageResource(FileIcons.getFileIconRes(fileModel.getName()));
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mItemOnClickListener!=null){
+                    mItemOnClickListener.onClick(fileModel);
+                }
+            }
+        });
     }
 
     @Override
@@ -67,7 +75,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ItemViewHolder
     }
 
     public interface OnItemClickListener {
-        void onClick(PathType pathType);
+        void onClick(FileModel fileModel);
     }
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {

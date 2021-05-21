@@ -170,6 +170,5 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
     @Override
     public void onError(Throwable throwable) {
         Log.e(TAG, "onError:\t" + throwable);
-
     }
 }

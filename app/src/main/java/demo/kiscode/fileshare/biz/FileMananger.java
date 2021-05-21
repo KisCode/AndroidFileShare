@@ -25,6 +25,8 @@ import demo.kiscode.fileshare.contants.FileMIME;
 import demo.kiscode.fileshare.contants.PathType;
 import demo.kiscode.fileshare.util.FileUtil;
 
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
+
 /**
  * Description:
  * Author: keno
@@ -43,9 +45,13 @@ public class FileMananger {
             case ExternalFilesDir:
                 return context.getExternalFilesDir(null);
             case ExternalStorageDirectory:
-                return Environment.getExternalStorageDirectory();
+                return Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS );
         }
         return null;
+    }
+
+    private static String getExternalStorageDownloadDir(Context context) {
+        return DIRECTORY_DOWNLOADS + File.separator + context.getString(R.string.app_name);
     }
 
     /***
@@ -90,7 +96,7 @@ public class FileMananger {
      */
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public static Uri getExternalStorageDownloadFileUri(Context context, String fileName) {
-        String relativePath = Environment.DIRECTORY_DOWNLOADS + File.separator + context.getString(R.string.app_name);
+        String relativePath = getExternalStorageDownloadDir(context);
         ContentResolver resolver = context.getContentResolver();
         //设置文件参数到ContentValues
         ContentValues values = new ContentValues();

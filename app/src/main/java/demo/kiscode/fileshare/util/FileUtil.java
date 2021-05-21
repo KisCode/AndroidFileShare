@@ -37,8 +37,11 @@ public class FileUtil {
      * @return
      */
     public static long getDirTotalSize(File dir) {
+        if (dir == null) return 0;
+
         long size = 0;
         File[] files = dir.listFiles();
+        if (files == null) return 0;
         for (File file : files) {
             if (file.isDirectory()) {
                 size += getDirTotalSize(file);
@@ -56,7 +59,13 @@ public class FileUtil {
      */
     public static List<File> getAllFile(File dir) {
         List<File> fileList = new ArrayList<>();
+        if (dir == null || !dir.exists() || !dir.isDirectory()) {
+            return fileList;
+        }
         File[] files = dir.listFiles();
+        if (files == null) {
+            return fileList;
+        }
         for (File file : files) {
             if (file.isDirectory()) {
                 fileList.addAll(getAllFile(file));

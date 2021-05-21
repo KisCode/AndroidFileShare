@@ -15,14 +15,14 @@
         android:layout_height="wrap_content"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/title_text_size"
-        app:layout_constraintBottom_toTopOf="@id/tv_size_file"
+        app:layout_constraintBottom_toTopOf="@id/tv_path_file"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="cacheDir" />
 
     <TextView
-        android:id="@+id/tv_size_file"
+        android:id="@+id/tv_path_file"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/textColorSecondary"

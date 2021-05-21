@@ -18,8 +18,8 @@ import demo.kiscode.fileshare.contants.PathType;
 
 /**
  * Description:
- * Author:
- * Date : 2021/5/14 1keno5:11
+ * Author:keno
+ * Date : 2021/5/14
  **/
 public class ReceivePathAdapter extends RecyclerView.Adapter<ReceivePathAdapter.ItemViewHolder> {
     private List<PathType> mDatas;
@@ -76,7 +76,7 @@ public class ReceivePathAdapter extends RecyclerView.Adapter<ReceivePathAdapter.
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             tvDirName = itemView.findViewById(R.id.tv_name_file);
-            tvDirPath = itemView.findViewById(R.id.tv_size_file);
+            tvDirPath = itemView.findViewById(R.id.tv_path_file);
         }
     }
 }

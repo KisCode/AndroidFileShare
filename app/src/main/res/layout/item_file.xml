@@ -12,7 +12,7 @@
     <ImageView
         android:id="@+id/iv_icon_file"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="80dp"
         android:src="@mipmap/icon_unknow_file"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="h,81:66"

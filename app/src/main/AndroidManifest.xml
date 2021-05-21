@@ -3,6 +3,7 @@
     package="demo.kiscode.fileshare">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -10,7 +11,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CacheFileListActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -22,6 +22,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <activity android:name=".CacheFileListActivity" />
         <activity android:name=".ReceiveFileActivity">
             <intent-filter>
 
