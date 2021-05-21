@@ -25,7 +25,7 @@ import java.util.Objects;
 
 import demo.kiscode.fileshare.biz.FileMananger;
 import demo.kiscode.fileshare.contants.PathType;
-import demo.kiscode.fileshare.pojo.ShareFileInfo;
+import demo.kiscode.fileshare.pojo.ShareFileModel;
 import demo.kiscode.fileshare.util.FileIcons;
 
 /**
@@ -40,7 +40,7 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
 
     private Uri sourceUri;
     private PathType pathType;
-    private ShareFileInfo shareFileInfo;
+    private ShareFileModel shareFileInfo;
 
     private ImageView ivFileIcon;
     private TextView tvFileName, tvFileSize, tvReceivePath;
@@ -82,7 +82,7 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
 
         Log.i(TAG, sourceUri.toString());
         Log.i(TAG, "filePath:" + pathType);
-        shareFileInfo = new ShareFileInfo();
+        shareFileInfo = new ShareFileModel();
         if (ContentResolver.SCHEME_FILE.equals(sourceUri.getScheme())) {
             File file = new File(sourceUri.getPath());
             shareFileInfo.setName(file.getName());

@@ -75,8 +75,8 @@ public class ReceivePathAdapter extends RecyclerView.Adapter<ReceivePathAdapter.
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvDirName = itemView.findViewById(R.id.tv_name_dir);
-            tvDirPath = itemView.findViewById(R.id.tv_path_dir);
+            tvDirName = itemView.findViewById(R.id.tv_name_file);
+            tvDirPath = itemView.findViewById(R.id.tv_size_file);
         }
     }
 }

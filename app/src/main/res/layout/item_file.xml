@@ -4,20 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/inner_padding_size"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:padding="@dimen/inner_padding_size">
+
+    <ImageView
+        android:id="@+id/iv_icon_file"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/icon_unknow_file"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="h,81:66"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_name_file"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/title_text_size"
         app:layout_constraintBottom_toTopOf="@id/tv_size_file"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_file"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="cacheDir" />
 
@@ -25,11 +36,12 @@
         android:id="@+id/tv_size_file"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:textColor="@color/textColorSecondary"
         android:textSize="@dimen/body_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_file"
         app:layout_constraintTop_toBottomOf="@id/tv_name_file"
         tools:text="cacheDir" />
 </androidx.constraintlayout.widget.ConstraintLayout>

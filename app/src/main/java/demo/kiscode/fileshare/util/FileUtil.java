@@ -1,5 +1,9 @@
 package demo.kiscode.fileshare.util;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Description:
  * Author: kisCode
@@ -26,6 +30,43 @@ public class FileUtil {
         }
         return false;
     }
+
+    /***
+     * 获取指定文件夹下所有文件大小总和
+     * @param dir 文件夹
+     * @return
+     */
+    public static long getDirTotalSize(File dir) {
+        long size = 0;
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                size += getDirTotalSize(file);
+            } else {
+                size += file.length();
+            }
+        }
+        return size;
+    }
+
+    /***
+     * 获取指定文件夹下所有文件
+     * @param dir 文件夹
+     * @return 文件集合
+     */
+    public static List<File> getAllFile(File dir) {
+        List<File> fileList = new ArrayList<>();
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                fileList.addAll(getAllFile(file));
+            } else {
+                fileList.add(file);
+            }
+        }
+        return fileList;
+    }
+
 
     // 关于文件后缀的常量
     public static final class FileSuffix {

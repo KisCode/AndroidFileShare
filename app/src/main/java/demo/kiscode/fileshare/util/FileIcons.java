@@ -21,38 +21,38 @@ public class FileIcons {
         switch (ext) {
             case "xls":
             case "xlsx":
-                return R.drawable.file_ic_detail_excel;
+                return R.mipmap.icon_excel;
             case "ppt":
             case "pptx":
-                return R.drawable.file_ic_detail_ppt;
+                return R.mipmap.icon_ppt;
             case "doc":
             case "docx":
-                return R.drawable.file_ic_detail_word;
+                return R.mipmap.icon_word;
             case "pdf":
-                return R.drawable.file_ic_detail_pdf;
+                return R.mipmap.icon_pdf;
             case "html":
             case "htm":
-                return R.drawable.file_ic_detail_html;
+                return R.mipmap.icon_html;
             case "txt":
-                return R.drawable.file_ic_detail_txt;
+                return R.mipmap.icon_txt;
             case "rar":
-                return R.drawable.file_ic_detail_rar;
+                return R.mipmap.icon_rar;
             case "zip":
             case "7z":
-                return R.drawable.file_ic_detail_zip;
+                return R.mipmap.icon_zip;
             case "mp4":
-                return R.drawable.file_ic_detail_mp4;
+                return R.mipmap.icon_mp4;
             case "mp3":
-                return R.drawable.file_ic_detail_mp3;
+                return R.mipmap.icon_mp3;
             case "png":
-                return R.drawable.file_ic_detail_png;
+                return R.mipmap.icon_png;
             case "gif":
-                return R.drawable.file_ic_detail_gif;
+                return R.mipmap.icon_gif;
             case "jpg":
             case "jpeg":
-                return R.drawable.file_ic_detail_jpg;
+                return R.mipmap.icon_jpg;
             default:
-                return R.drawable.file_ic_detail_unknow;
+                return R.mipmap.icon_unknow_file;
         }
     }
 }

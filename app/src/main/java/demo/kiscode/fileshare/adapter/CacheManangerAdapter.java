@@ -1,6 +1,7 @@
 package demo.kiscode.fileshare.adapter;
 
 import android.content.Context;
+import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
 import java.util.List;
 
 import demo.kiscode.fileshare.R;
-import demo.kiscode.fileshare.biz.FileMananger;
-import demo.kiscode.fileshare.contants.PathType;
+import demo.kiscode.fileshare.pojo.CacheModel;
 
 /**
  * Description:
@@ -22,11 +21,11 @@ import demo.kiscode.fileshare.contants.PathType;
  * Date : 2021/5/14 1keno5:11
  **/
 public class CacheManangerAdapter extends RecyclerView.Adapter<CacheManangerAdapter.ItemViewHolder> {
-    private List<PathType> mDatas;
+    private List<CacheModel> mDatas;
     private Context mContext;
     private OnItemClickListener mItemOnClickListener;
 
-    public CacheManangerAdapter(List<PathType> datas) {
+    public CacheManangerAdapter(List<CacheModel> datas) {
         this.mDatas = datas;
     }
 
@@ -38,25 +37,21 @@ public class CacheManangerAdapter extends RecyclerView.Adapter<CacheManangerAdap
     @Override
     public CacheManangerAdapter.ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         mContext = parent.getContext();
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_path_mananger, parent, false);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_cache_mananger, parent, false);
         return new ItemViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        PathType pathType = mDatas.get(position);
-        holder.tvDirName.setText(pathType.name());
+        CacheModel cacheModel = mDatas.get(position);
 
-        File dir = FileMananger.getDirByCode(mContext, pathType);
-        if (dir != null) {
-            holder.tvDirPath.setText(dir.getAbsolutePath());
-        } else {
-            holder.tvDirPath.setText("");
-        }
+        holder.tvDirName.setText(cacheModel.getPathType().name());
+        holder.tvDirPath.setText(cacheModel.getPathAbsolute());
+        holder.tvSize.setText(Formatter.formatFileSize(mContext, cacheModel.getTotalSize()));
 
         holder.itemView.setOnClickListener(v -> {
             if (mItemOnClickListener != null) {
-                mItemOnClickListener.onClick(pathType);
+                mItemOnClickListener.onClick(cacheModel);
             }
         });
     }
@@ -66,19 +61,26 @@ public class CacheManangerAdapter extends RecyclerView.Adapter<CacheManangerAdap
         return mDatas.size();
     }
 
+    public void setNewData(List<CacheModel> newData) {
+        if (newData == mDatas) {
+            return;
+        }
+        mDatas = newData;
+        notifyDataSetChanged();
+    }
+
     public interface OnItemClickListener {
-        void onClick(PathType pathType);
+        void onClick(CacheModel cacheModel);
     }
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDirName, tvDirPath, tvSize, tvClear;
+        TextView tvDirName, tvDirPath, tvSize;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvDirName = itemView.findViewById(R.id.tv_name_dir);
-            tvDirPath = itemView.findViewById(R.id.tv_path_dir);
+            tvDirName = itemView.findViewById(R.id.tv_name_file);
+            tvDirPath = itemView.findViewById(R.id.tv_size_file);
             tvSize = itemView.findViewById(R.id.tv_size_dir);
-            tvClear = itemView.findViewById(R.id.tv_clear);
         }
     }
 }

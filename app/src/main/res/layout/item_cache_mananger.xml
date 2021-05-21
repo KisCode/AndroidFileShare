@@ -10,13 +10,13 @@
     android:padding="@dimen/inner_padding_size">
 
     <TextView
-        android:id="@+id/tv_name_dir"
+        android:id="@+id/tv_name_file"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/title_text_size"
-        app:layout_constraintBottom_toTopOf="@id/tv_path_dir"
-        app:layout_constraintEnd_toStartOf="@+id/tv_size_dir"
+        app:layout_constraintBottom_toTopOf="@id/tv_size_dir"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="cacheDir" />
@@ -26,33 +26,34 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/textColorPrimary"
-        android:textSize="@dimen/subhead_text_size"
-        app:layout_constraintBottom_toTopOf="@id/tv_path_dir"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_name_dir"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="@dimen/display1_text_size"
+        app:layout_constraintBottom_toTopOf="@id/tv_size_file"
+        app:layout_constraintEnd_toStartOf="@+id/iv_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_name_file"
         tools:text="10.8M" />
 
     <TextView
-        android:id="@+id/tv_path_dir"
+        android:id="@+id/tv_size_file"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/textColorSecondary"
         android:textSize="@dimen/body_text_size"
-        app:layout_constraintBottom_toBottomOf="@id/tv_clear"
+        app:layout_constraintBottom_toBottomOf="@id/iv_arrow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_name_dir"
+        app:layout_constraintTop_toBottomOf="@id/tv_size_dir"
         tools:text="cacheDir" />
 
-    <TextView
-        android:id="@+id/tv_clear"
-        style="@style/style_stroke_button"
-        android:layout_marginTop="8dp"
-        android:text="清空缓存"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/iv_arrow"
+        android:layout_width="18dp"
+        android:layout_height="18sp"
+        android:src="@mipmap/icon_arrow_right"
+        app:layout_constraintBottom_toBottomOf="@id/tv_size_file"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_path_dir" />
+        app:layout_constraintStart_toEndOf="@id/tv_size_dir"
+        app:layout_constraintTop_toTopOf="@id/tv_name_file" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
