@@ -22,7 +22,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".CacheFileListActivity" />
+        <activity android:name=".CacheFileListActivity"/>
         <activity android:name=".ReceiveFileActivity">
             <intent-filter>
 

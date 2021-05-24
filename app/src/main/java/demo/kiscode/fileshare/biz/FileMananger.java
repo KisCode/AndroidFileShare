@@ -1,8 +1,10 @@
 package demo.kiscode.fileshare.biz;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -12,6 +14,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import demo.kiscode.fileshare.BuildConfig;
 import demo.kiscode.fileshare.R;
 import demo.kiscode.fileshare.contants.FileMIME;
 import demo.kiscode.fileshare.contants.PathType;
@@ -45,7 +49,7 @@ public class FileMananger {
             case ExternalFilesDir:
                 return context.getExternalFilesDir(null);
             case ExternalStorageDirectory:
-                return Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS );
+                return Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS);
         }
         return null;
     }
@@ -86,6 +90,30 @@ public class FileMananger {
             return FileMIME.APK;
         }
         return FileMIME.UNKWNO;
+    }
+
+
+    public static void shareFile(Activity activity, File file) {
+        Intent fileIntent = getFileIntent(activity, file, getMIME(activity, file.getName()).getValue());
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, fileIntent.getData());
+        shareIntent.setType(fileIntent.getType());
+        activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getText(R.string.share)));
+    }
+
+    public static Intent getFileIntent(Context context, File file, String mimeType) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//			Android 7.0文件权限管理管理 net.rlair.efb.provider
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
+            intent.setDataAndType(uri, mimeType);
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), mimeType);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        return intent;
     }
 
 

@@ -14,11 +14,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import demo.kiscode.fileshare.adapter.CacheManangerAdapter;
+import demo.kiscode.fileshare.adapter.comman.CommanAdapter;
 import demo.kiscode.fileshare.biz.FileMananger;
 import demo.kiscode.fileshare.contants.PathType;
 import demo.kiscode.fileshare.pojo.CacheModel;
 import demo.kiscode.fileshare.util.FileUtil;
 
+/**
+ * Description:  首页文件管理列表
+ **/
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private RecyclerView recyclerView;
@@ -38,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new CacheManangerAdapter(Collections.emptyList());
         recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
-        mAdapter.setOnItemClickListener(new CacheManangerAdapter.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new CommanAdapter.OnItemClickListener<CacheModel>() {
             @Override
-            public void onClick(CacheModel cacheModel) {
+            public void onItemClick(CommanAdapter<CacheModel> adapter, int position) {
+                CacheModel cacheModel = adapter.getItem(position);
                 CacheFileListActivity.start(MainActivity.this, cacheModel.getPathType());
             }
         });

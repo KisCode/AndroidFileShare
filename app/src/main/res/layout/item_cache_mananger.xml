@@ -10,7 +10,7 @@
     android:padding="@dimen/inner_padding_size">
 
     <TextView
-        android:id="@+id/tv_name_file"
+        android:id="@+id/tv_name_dir"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/textColorPrimary"
@@ -27,14 +27,14 @@
         android:layout_height="wrap_content"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/display1_text_size"
-        app:layout_constraintBottom_toTopOf="@id/tv_size_file"
+        app:layout_constraintBottom_toTopOf="@id/tv_path_dir"
         app:layout_constraintEnd_toStartOf="@+id/iv_arrow"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_name_file"
+        app:layout_constraintTop_toBottomOf="@id/tv_name_dir"
         tools:text="10.8M" />
 
     <TextView
-        android:id="@+id/tv_size_file"
+        android:id="@+id/tv_path_dir"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/textColorSecondary"
@@ -50,10 +50,10 @@
         android:layout_width="18dp"
         android:layout_height="18sp"
         android:src="@mipmap/icon_arrow_right"
-        app:layout_constraintBottom_toBottomOf="@id/tv_size_file"
+        app:layout_constraintBottom_toBottomOf="@id/tv_path_dir"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_size_dir"
-        app:layout_constraintTop_toTopOf="@id/tv_name_file" />
+        app:layout_constraintTop_toTopOf="@id/tv_name_dir" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

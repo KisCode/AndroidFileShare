@@ -1,5 +1,8 @@
 package demo.kiscode.fileshare.util;
 
+import android.app.Activity;
+import android.content.Intent;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +78,7 @@ public class FileUtil {
         }
         return fileList;
     }
+
 
 
     // 关于文件后缀的常量

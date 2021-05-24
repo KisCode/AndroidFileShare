@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="file_operator">
+        <item>打开</item>
+        <item>分享</item>
+        <item>删除</item>
+    </string-array>
+</resources>
