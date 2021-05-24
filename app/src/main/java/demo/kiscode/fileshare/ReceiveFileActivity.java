@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import demo.kiscode.fileshare.adapter.ReceivePathAdapter;
+import demo.kiscode.fileshare.adapter.comman.CommanAdapter;
 import demo.kiscode.fileshare.biz.FileMananger;
 import demo.kiscode.fileshare.contants.PathType;
 
@@ -37,13 +38,28 @@ public class ReceiveFileActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
-        adapter.setOnItemClickListener(pathType -> {
+        adapter.setOnItemClickListener((adapter1, position) -> {
+            PathType pathType = adapter1.getItem(position);
             File dir = FileMananger.getDirByCode(this, pathType);
             if (dir != null) {
                 FileReceiveDialog dialog = FileReceiveDialog.instantiate(receiveUri, pathType);
                 dialog.show(getSupportFragmentManager(), "FileReceiveDialog");
+
+                dialog.setOnCompleteListener(() -> {
+                    openHome();
+                });
             }
         });
+    }
+
+    /***
+     * 打开首页
+     */
+    private void openHome() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void initIntent() {

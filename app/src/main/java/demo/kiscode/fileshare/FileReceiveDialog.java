@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +45,7 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
     private ImageView ivFileIcon;
     private TextView tvFileName, tvFileSize, tvReceivePath;
     private ContentLoadingProgressBar progressBar;
+    private OnCompleteListener onCompleteListener;
 
     public static FileReceiveDialog instantiate(Uri fileUri, PathType path) {
         FileReceiveDialog dialog = new FileReceiveDialog();
@@ -164,8 +164,12 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
         //下载完成
         Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
             Log.i(TAG, Thread.currentThread().getName() + "\tonComplete");
-            Toast.makeText(getContext(), "接收完毕", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), getString(R.string.text_receive_complete), Toast.LENGTH_LONG).show();
             dismiss();
+
+            if (onCompleteListener != null) {
+                onCompleteListener.onComplete();
+            }
         });
     }
 
@@ -174,4 +178,11 @@ public class FileReceiveDialog extends DialogFragment implements View.OnClickLis
         Log.e(TAG, "onError:\t" + throwable);
     }
 
+    public void setOnCompleteListener(OnCompleteListener onCompleteListener) {
+        this.onCompleteListener = onCompleteListener;
+    }
+
+    public interface OnCompleteListener {
+        void onComplete();
+    }
 }
