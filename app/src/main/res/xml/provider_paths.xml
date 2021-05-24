@@ -22,15 +22,9 @@
     <!-- 标签 name : 文件路径级别对应的路径映射名称，对外暴露名称，不可重复。 -->
     <!-- 标签 path : 文件路径级别对应的路径，对外暴露子目录名称，可以使用"/"或"."通配所有子目录。 -->
 
-    <!-- "/storage/emulated/0" 映射为 "/external" -->
-  <!--  <external-path
-        name="external"
-        path="Downloads" />-->
-
     <external-path
         name="external_files_download"
         path="Download" />
-
 
     <!-- "/Android/<package_name>/cache/" 映射为 "external-cache" -->
     <external-cache-path

@@ -129,7 +129,8 @@ public class CacheFileListActivity extends AppCompatActivity {
      * @param fileModel
      */
     private void deleteFile(FileModel fileModel) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (mPathType == PathType.ExternalStorageDirectory
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             FileMananger.deleteExternalStorageDownloadFile(this, fileModel);
         } else {
             File file = new File(FileMananger.getDirByCode(this, fileModel.getPathType()), fileModel.getName());
