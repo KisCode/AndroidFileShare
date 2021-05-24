@@ -1,82 +1,37 @@
 package demo.kiscode.fileshare.adapter;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.util.List;
 
 import demo.kiscode.fileshare.R;
-import demo.kiscode.fileshare.biz.FileBiz;
+import demo.kiscode.fileshare.adapter.comman.CommanAdapter;
+import demo.kiscode.fileshare.adapter.comman.CommanViewHolder;
+import demo.kiscode.fileshare.biz.FileMananger;
 import demo.kiscode.fileshare.contants.PathType;
 
 /**
- * Description:
- * Author:
- * Date : 2021/5/14 1keno5:11
+ * Description: 接收文件列表內容適配器
+ * Author:keno
+ * Date : 2021/5/14
  **/
-public class ReceivePathAdapter extends RecyclerView.Adapter<ReceivePathAdapter.ItemViewHolder> {
-    private List<PathType> mDatas;
-    private Context mContext;
-    private OnItemClickListener mItemOnClickListener;
-
-    public ReceivePathAdapter(List<PathType> datas) {
-        this.mDatas = datas;
-    }
-
-    public void setOnItemClickListener(OnItemClickListener mItemOnClickListener) {
-        this.mItemOnClickListener = mItemOnClickListener;
-    }
-
-    @NonNull
-    @Override
-    public ReceivePathAdapter.ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        mContext = parent.getContext();
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_receive_path, parent, false);
-        return new ItemViewHolder(itemView);
+public class ReceivePathAdapter extends CommanAdapter<PathType> {
+    public ReceivePathAdapter(List<PathType> dataList) {
+        super(R.layout.item_receive_path, dataList);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        PathType pathType = mDatas.get(position);
-        holder.tvDirName.setText(pathType.name());
+    public void onBindViewHolder(@NonNull CommanViewHolder holder, int position) {
+        PathType pathType = getItem(position);
 
-        File dir = FileBiz.getDirByCode(mContext, pathType);
+        File dir = FileMananger.getDirByCode(mContext, pathType);
+        String path = "";
         if (dir != null) {
-            holder.tvDirPath.setText(dir.getAbsolutePath());
-        } else {
-            holder.tvDirPath.setText("");
+            path = dir.getAbsolutePath();
         }
-
-        holder.itemView.setOnClickListener(v -> {
-            if (mItemOnClickListener != null) {
-                mItemOnClickListener.onClick(pathType);
-            }
-        });
+        holder.setText(R.id.tv_name_file, pathType.name());
+        holder.setText(R.id.tv_path_file, path);
     }
 
-    @Override
-    public int getItemCount() {
-        return mDatas.size();
-    }
-
-    public interface OnItemClickListener {
-        void onClick(PathType pathType);
-    }
-
-    static class ItemViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDirName, tvDirPath;
-
-        public ItemViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvDirName = itemView.findViewById(R.id.tv_name_dir);
-            tvDirPath = itemView.findViewById(R.id.tv_path_dir);
-        }
-    }
 }

@@ -5,14 +5,14 @@ package demo.kiscode.fileshare.pojo;
  * Author: keno
  * Date : 2020/9/21 15:36
  **/
-public class ShareFileInfo {
+public class ShareFileModel {
     private String name;
     private long size;
 
-    public ShareFileInfo() {
+    public ShareFileModel() {
     }
 
-    public ShareFileInfo(String name, long size) {
+    public ShareFileModel(String name, long size) {
         this.name = name;
         this.size = size;
     }
@@ -35,7 +35,7 @@ public class ShareFileInfo {
 
     @Override
     public String toString() {
-        return "ShareFileInfo{" +
+        return "ShareFileModel{" +
                 "name='" + name + '\'' +
                 ", size=" + size +
                 '}';
