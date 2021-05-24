@@ -14,7 +14,6 @@ import java.io.File;
 import java.util.Arrays;
 
 import demo.kiscode.fileshare.adapter.ReceivePathAdapter;
-import demo.kiscode.fileshare.adapter.comman.CommanAdapter;
 import demo.kiscode.fileshare.biz.FileMananger;
 import demo.kiscode.fileshare.contants.PathType;
 
@@ -56,7 +55,7 @@ public class ReceiveFileActivity extends AppCompatActivity {
      * 打开首页
      */
     private void openHome() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, CacheManagerActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

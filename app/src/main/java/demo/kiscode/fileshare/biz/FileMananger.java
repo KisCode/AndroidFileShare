@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,11 +23,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import demo.kiscode.fileshare.BuildConfig;
 import demo.kiscode.fileshare.R;
 import demo.kiscode.fileshare.contants.FileMIME;
 import demo.kiscode.fileshare.contants.PathType;
+import demo.kiscode.fileshare.pojo.FileModel;
 import demo.kiscode.fileshare.util.FileUtil;
 
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
@@ -37,6 +41,7 @@ import static android.os.Environment.DIRECTORY_DOWNLOADS;
  * Date : 2021/5/14 16:09
  **/
 public class FileMananger {
+    private static final String DIR_NAME = "FileShare";
 
     public static File getDirByCode(Context context, PathType pathType) {
         switch (pathType) {
@@ -140,6 +145,42 @@ public class FileMananger {
         return resolver.insert(external, values);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static List<FileModel> queryAllExternalStorageDownloadList(Context context) {
+        ContentResolver resolver = context.getContentResolver();
+        List<FileModel> fileModelList = new ArrayList<>();
+        Cursor cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Downloads.DISPLAY_NAME));
+                long fileSize = cursor.getLong(cursor.getColumnIndex(MediaStore.Downloads.SIZE));
+                long lastModifyDate = cursor.getLong(cursor.getColumnIndex(MediaStore.Downloads.DATE_MODIFIED));
+                FileModel fileModel = new FileModel(fileName, PathType.ExternalStorageDirectory, fileSize, lastModifyDate);
+                fileModelList.add(fileModel);
+            }
+        }
+        return fileModelList;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static long getAllExternalStorageDownloadTotalSize(Context context) {
+        long totalSize = 0;
+        ContentResolver resolver = context.getContentResolver();
+        List<FileModel> fileModelList = new ArrayList<>();
+        Cursor cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                totalSize += cursor.getLong(cursor.getColumnIndex(MediaStore.Downloads.SIZE));
+            }
+        }
+        return totalSize;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static int deleteExternalStorageDownloadFile(Context context, FileModel fileModel) {
+        ContentResolver resolver = context.getContentResolver();
+        return resolver.delete(MediaStore.Downloads.EXTERNAL_CONTENT_URI, MediaStore.Downloads.DISPLAY_NAME + " = ?", new String[]{fileModel.getName()});
+    }
 
     public static void writeIO(ContentResolver resolver, Uri inUri, Uri outUri, OnReceiveCallback onCallBack) {
         try {

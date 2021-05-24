@@ -2,6 +2,7 @@ package demo.kiscode.fileshare;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,8 +24,8 @@ import demo.kiscode.fileshare.util.FileUtil;
 /**
  * Description:  首页文件管理列表
  **/
-public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+public class CacheManagerActivity extends AppCompatActivity {
+    private static final String TAG = "CacheManagerActivity";
     private RecyclerView recyclerView;
     private CacheManangerAdapter mAdapter;
 
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(CommanAdapter<CacheModel> adapter, int position) {
                 CacheModel cacheModel = adapter.getItem(position);
-                CacheFileListActivity.start(MainActivity.this, cacheModel.getPathType());
+                CacheFileListActivity.start(CacheManagerActivity.this, cacheModel.getPathType());
             }
         });
     }
@@ -66,8 +67,15 @@ public class MainActivity extends AppCompatActivity {
         AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> {
             ArrayList<CacheModel> cacheList = new ArrayList<>();
             for (PathType pathType : PathType.values()) {
-                File dir = FileMananger.getDirByCode(MainActivity.this, pathType);
-                long totalSize = FileUtil.getDirTotalSize(dir);
+                File dir = FileMananger.getDirByCode(CacheManagerActivity.this, pathType);
+                long totalSize = 0;
+                if (PathType.ExternalStorageDirectory == pathType
+                        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    totalSize = FileMananger.getAllExternalStorageDownloadTotalSize(this);
+                } else {
+                    totalSize = FileUtil.getDirTotalSize(dir);
+                }
+
                 String absolutePath = dir.getAbsolutePath();
                 CacheModel cacheModel = new CacheModel(pathType, absolutePath, totalSize);
                 cacheList.add(cacheModel);

@@ -7,6 +7,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="colorControlNormal">@android:color/white</item>
+
 <!--
         <item name="android:toolbarStyle" tools:targetApi="lollipop">@style/style_toolbar_normal</item>-->
     </style>
@@ -46,6 +47,7 @@
         <item name="titleTextColor">@android:color/white</item>
         <item name="subtitleTextColor">@android:color/white</item>
         <item name="android:theme">@style/ThemeOverlay.AppCompat</item>
+
     </style>
 
 </resources>

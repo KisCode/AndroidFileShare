@@ -34,7 +34,7 @@
                 <data android:mimeType="*/*" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".CacheManagerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
