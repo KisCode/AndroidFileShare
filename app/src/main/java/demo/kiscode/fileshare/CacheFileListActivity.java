@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -103,6 +104,7 @@ public class CacheFileListActivity extends AppCompatActivity {
 
     private void loadDatas() {
         final File dir = FileMananger.getDirByCode(this, mPathType);
+        Log.i("FilePath", dir.getAbsolutePath());
         AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {

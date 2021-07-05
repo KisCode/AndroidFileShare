@@ -36,7 +36,7 @@ import demo.kiscode.fileshare.util.FileUtil;
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 /**
- * Description:
+ * Description: 文件管理类
  * Author: keno
  * Date : 2021/5/14 16:09
  **/
@@ -61,6 +61,18 @@ public class FileMananger {
 
     private static String getExternalStorageDownloadDir(Context context) {
         return DIRECTORY_DOWNLOADS + File.separator + context.getString(R.string.app_name);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private static Uri getExternalStorageDownloadUri(Context context) {
+        String relativePath =  getExternalStorageDownloadDir(context);
+        ContentResolver resolver = context.getContentResolver();
+        //设置文件参数到ContentValues
+        ContentValues values = new ContentValues();
+        //设置文件相对路径
+        values.put(MediaStore.Downloads.RELATIVE_PATH, relativePath);
+        Uri external = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
+        return resolver.insert(external, values);
     }
 
     /***
@@ -149,7 +161,8 @@ public class FileMananger {
     public static List<FileModel> queryAllExternalStorageDownloadList(Context context) {
         ContentResolver resolver = context.getContentResolver();
         List<FileModel> fileModelList = new ArrayList<>();
-        Cursor cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, null, null, null);
+//        Cursor cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, null, null, null);
+        Cursor cursor = resolver.query(getExternalStorageDownloadUri(context), null, null, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Downloads.DISPLAY_NAME));
@@ -166,10 +179,12 @@ public class FileMananger {
     public static long getAllExternalStorageDownloadTotalSize(Context context) {
         long totalSize = 0;
         ContentResolver resolver = context.getContentResolver();
-        List<FileModel> fileModelList = new ArrayList<>();
-        Cursor cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, null, null, null);
+//        Cursor cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, null, null, null);
+        Cursor cursor = resolver.query(getExternalStorageDownloadUri(context), null, null, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
+                String relativePath = cursor.getString(cursor.getColumnIndex(MediaStore.Downloads.RELATIVE_PATH));
+                Log.i("relativePath", relativePath);
                 totalSize += cursor.getLong(cursor.getColumnIndex(MediaStore.Downloads.SIZE));
             }
         }
