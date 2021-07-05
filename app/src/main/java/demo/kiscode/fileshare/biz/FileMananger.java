@@ -2,6 +2,7 @@ package demo.kiscode.fileshare.biz;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -65,7 +66,8 @@ public class FileMananger {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private static Uri getExternalStorageDownloadUri(Context context) {
-        String relativePath =  getExternalStorageDownloadDir(context);
+//        String relativePath =  context.getString(R.string.app_name);
+        String relativePath = getExternalStorageDownloadDir(context);
         ContentResolver resolver = context.getContentResolver();
         //设置文件参数到ContentValues
         ContentValues values = new ContentValues();
@@ -159,10 +161,19 @@ public class FileMananger {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public static List<FileModel> queryAllExternalStorageDownloadList(Context context) {
+//        String filePath = context.getString(R.string.app_name);
+        String filePath = getExternalStorageDownloadDir(context);
         ContentResolver resolver = context.getContentResolver();
         List<FileModel> fileModelList = new ArrayList<>();
-//        Cursor cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, null, null, null);
-        Cursor cursor = resolver.query(getExternalStorageDownloadUri(context), null, null, null);
+        String selection = MediaStore.Downloads.RELATIVE_PATH + "=?";
+        /*Cursor cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                *//*new String[]{MediaStore.Images.Media._ID, queryPathKey, MediaStore.Images.Media.MIME_TYPE, MediaStore.Images.Media.DISPLAY_NAME},*//*
+                null,
+                selection,
+                new String[]{filePath},
+                null);*/
+//        Cursor cursor = resolver.query(getExternalStorageDownloadUri(context), null, null, null);
+        Cursor cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, null, null, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Downloads.DISPLAY_NAME));

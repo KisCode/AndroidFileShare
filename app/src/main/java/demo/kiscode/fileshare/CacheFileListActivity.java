@@ -62,13 +62,13 @@ public class CacheFileListActivity extends AppCompatActivity {
     private void requestPermission() {
         if (mPathType != PathType.ExternalStorageDirectory) {
             //非外部存储无需 申请权限
-            loadDatas();
+            loadData();
             return;
         }
 
         if (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 && PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            loadDatas();
+            loadData();
         } else {
             ActivityCompat.requestPermissions(this
                     , new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}
@@ -82,7 +82,7 @@ public class CacheFileListActivity extends AppCompatActivity {
         if (CODE_REQUEST_EXTENAL_STORAGE == requestCode
                 && PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 && PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            loadDatas();
+            loadData();
         }
     }
 
@@ -102,7 +102,7 @@ public class CacheFileListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadDatas() {
+    private void loadData() {
         final File dir = FileMananger.getDirByCode(this, mPathType);
         Log.i("FilePath", dir.getAbsolutePath());
         AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
@@ -139,7 +139,7 @@ public class CacheFileListActivity extends AppCompatActivity {
             file.delete();
         }
 
-        loadDatas();
+        loadData();
     }
 
     private void openFile(FileModel fileModel) {
