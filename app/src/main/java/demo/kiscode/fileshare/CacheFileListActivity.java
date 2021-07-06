@@ -6,9 +6,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -22,6 +26,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +46,7 @@ import demo.kiscode.fileshare.util.FileUtil;
  **/
 public class CacheFileListActivity extends AppCompatActivity {
     private static final int CODE_REQUEST_EXTENAL_STORAGE = 192;
+    private static final int CODE_REQUEST_PICK_FILE = 2856;
     private static final String KEY_PATH_TYPE = "PATH_TYPE";
     private FileAdapter mAdapter;
     private PathType mPathType;
@@ -77,6 +85,31 @@ public class CacheFileListActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CODE_REQUEST_PICK_FILE
+                && resultCode == RESULT_OK) {
+            Uri uri = null;
+            if (data != null) {
+                uri = data.getData();
+                Log.i("onActivityResult", uri.toString());
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                try {
+                    ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
+                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                intent.setData(uri);
+                startActivity(intent);
+//                intent.setDataAndType(uri, mimeType);
+            }
+        }
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (CODE_REQUEST_EXTENAL_STORAGE == requestCode
@@ -103,8 +136,6 @@ public class CacheFileListActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        final File dir = FileMananger.getDirByCode(this, mPathType);
-        Log.i("FilePath", dir.getAbsolutePath());
         AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
@@ -114,6 +145,8 @@ public class CacheFileListActivity extends AppCompatActivity {
                     List<FileModel> list = FileMananger.queryAllExternalStorageDownloadList(CacheFileListActivity.this);
                     fileModelList.addAll(list);
                 } else {
+                    final File dir = FileMananger.getDirByCode(getBaseContext(), mPathType);
+                    Log.i("FilePath", dir.getAbsolutePath());
                     List<File> allFile = FileUtil.getAllFile(dir);
                     for (File file : allFile) {
                         FileModel fileModel = new FileModel(file.getName(), mPathType, file.length(), file.lastModified());
@@ -143,10 +176,25 @@ public class CacheFileListActivity extends AppCompatActivity {
     }
 
     private void openFile(FileModel fileModel) {
+/*        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && PathType.ExternalStorageDirectory.equals(fileModel.getPathType())) {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//            Uri uri = FileMananger.getExternalStorageDownloadFileUri(this, fileModel.getName());
+            String type = FileMananger.getMIME(this, fileModel.getName()).getValue();
+            intent.setType(type);
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, MediaStore.Downloads.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, CODE_REQUEST_PICK_FILE);
+        } else {
+            File file = new File(FileMananger.getDirByCode(this, fileModel.getPathType()), fileModel.getName());
+            String type = FileMananger.getMIME(this, fileModel.getName()).getValue();
+            Intent intent = FileMananger.getFileIntent(this, file, type);
+            startActivity(intent);
+        }*/
+
         File file = new File(FileMananger.getDirByCode(this, fileModel.getPathType()), fileModel.getName());
         String type = FileMananger.getMIME(this, fileModel.getName()).getValue();
         Intent intent = FileMananger.getFileIntent(this, file, type);
         startActivity(intent);
+
     }
 
     private void shareFile(FileModel fileModel) {
