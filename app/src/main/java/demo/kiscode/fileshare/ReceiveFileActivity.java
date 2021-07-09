@@ -17,6 +17,11 @@ import demo.kiscode.fileshare.adapter.ReceivePathAdapter;
 import demo.kiscode.fileshare.biz.FileMananger;
 import demo.kiscode.fileshare.contants.PathType;
 
+/**
+* Description: 文件接收选择路径
+* Author: keno
+* Date : 2021/7/5 15:38
+**/
 public class ReceiveFileActivity extends AppCompatActivity {
     private final String TAG = "ReceiveFileActivity";
     private RecyclerView recyclerView;

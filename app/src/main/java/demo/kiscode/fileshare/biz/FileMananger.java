@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -36,7 +37,7 @@ import demo.kiscode.fileshare.util.FileUtil;
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 /**
- * Description:
+ * Description: 文件管理类
  * Author: keno
  * Date : 2021/5/14 16:09
  **/
@@ -54,7 +55,8 @@ public class FileMananger {
             case ExternalFilesDir:
                 return context.getExternalFilesDir(null);
             case ExternalStorageDirectory:
-                return Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS);
+//                return Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS);
+                return Environment.getExternalStoragePublicDirectory(getExternalStorageDownloadDir(context));
         }
         return null;
     }
@@ -114,6 +116,7 @@ public class FileMananger {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             Uri uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
             intent.setDataAndType(uri, mimeType);
+
         } else {
             intent.setDataAndType(Uri.fromFile(file), mimeType);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -129,7 +132,6 @@ public class FileMananger {
      */
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public static Uri getExternalStorageDownloadFileUri(Context context, String fileName) {
-        String relativePath = getExternalStorageDownloadDir(context);
         ContentResolver resolver = context.getContentResolver();
         //设置文件参数到ContentValues
         ContentValues values = new ContentValues();
@@ -139,6 +141,8 @@ public class FileMananger {
         String mimeType = FileMananger.getMIME(context, fileName).getValue();
         values.put(MediaStore.Downloads.MIME_TYPE, mimeType);
 
+        //存储文件在 外部共享目录的子目录  "Download/FileShare"
+        String relativePath = getExternalStorageDownloadDir(context);
         //设置文件相对路径
         values.put(MediaStore.Downloads.RELATIVE_PATH, relativePath);
         Uri external = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
@@ -149,14 +153,31 @@ public class FileMananger {
     public static List<FileModel> queryAllExternalStorageDownloadList(Context context) {
         ContentResolver resolver = context.getContentResolver();
         List<FileModel> fileModelList = new ArrayList<>();
-        Cursor cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, null, null, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Downloads.DISPLAY_NAME));
-                long fileSize = cursor.getLong(cursor.getColumnIndex(MediaStore.Downloads.SIZE));
-                long lastModifyDate = cursor.getLong(cursor.getColumnIndex(MediaStore.Downloads.DATE_MODIFIED));
-                FileModel fileModel = new FileModel(fileName, PathType.ExternalStorageDirectory, fileSize, lastModifyDate);
-                fileModelList.add(fileModel);
+
+        Cursor cursor = null;
+        try {
+//        Cursor cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, null, null, null);
+            //外部共享目录 每个应用创建文件会在数据表添加OWNER_PACKAGE_NAME 记录所属应用，当该应用被卸载时OWNER_PACKAGE_NAME标志位清空
+            String selection = MediaStore.Downloads.OWNER_PACKAGE_NAME + "=? and " + MediaStore.Downloads.SIZE + " > 0";
+            cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                    null,
+                    selection,
+                    new String[]{context.getPackageName()},
+                    null);
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Downloads.DISPLAY_NAME));
+                    long fileSize = cursor.getLong(cursor.getColumnIndex(MediaStore.Downloads.SIZE));
+                    long lastModifyDate = cursor.getLong(cursor.getColumnIndex(MediaStore.Downloads.DATE_MODIFIED));
+                    FileModel fileModel = new FileModel(fileName, PathType.ExternalStorageDirectory, fileSize, lastModifyDate);
+                    fileModelList.add(fileModel);
+                }
+            }
+        } catch (Exception e) {
+
+        } finally {
+            if (cursor != null) {
+                cursor.close();
             }
         }
         return fileModelList;
@@ -166,7 +187,6 @@ public class FileMananger {
     public static long getAllExternalStorageDownloadTotalSize(Context context) {
         long totalSize = 0;
         ContentResolver resolver = context.getContentResolver();
-        List<FileModel> fileModelList = new ArrayList<>();
         Cursor cursor = resolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, null, null, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
